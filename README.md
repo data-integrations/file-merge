@@ -1,7 +1,7 @@
 HDFS File Merge Plugin
 ============
 
-<a href="https://cdap-users.herokuapp.com/"><img alt="Join CDAP community" src="https://cdap-users.herokuapp.com/badge.svg?t=mapr-plugins"/></a> [![Build Status](https://travis-ci.org/hydrator/kafka-plugins.svg?branch=master)](https://travis-ci.org/hydrator/mapr-plugins) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) <img alt="CDAP Realtime Source" src="https://cdap-users.herokuapp.com/assets/cdap-realtime-source.svg"/> []() <img alt="CDAP Realtime Sink" src="https://cdap-users.herokuapp.com/assets/cdap-realtime-sink.svg"/> []() <img src="https://cdap-users.herokuapp.com/assets/cm-available.svg"/>
+<a href="https://cdap-users.herokuapp.com/"><img alt="Join CDAP community" src="https://cdap-users.herokuapp.com/badge.svg?t=to-utf8-action"/></a> [![Build Status](https://travis-ci.org/hydrator/to-utf8-action.svg?branch=release/1.0)](https://travis-ci.org/hydrator/to-utf8-action) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) <img alt="CDAP Action" src="https://cdap-users.herokuapp.com/assets/cdap-action.svg"/> []()
 
 HDFS File merge plugin that merges small files in HDFS and writes the merged file to a destination.
 
