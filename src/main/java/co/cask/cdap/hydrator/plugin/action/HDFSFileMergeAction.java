@@ -91,20 +91,14 @@ public class HDFSFileMergeAction extends Action {
     FileSystem fileSystem = source.getFileSystem(new Configuration());
     fileSystem.mkdirs(dest.getParent());
 
-    if (fileSystem.getFileStatus(source).isFile()) { //moving single file
-      LOG.error("Failed to concatenate, source path {} is a file ", source.toString());
-      if (!config.continueOnError) {
-        throw new IOException(String.format("Expected path '%s' to directory, but it is a file'",
-                                            source.toString()));
-      }
-      return;
-    }
 
     // Moving contents of directory
     FileStatus[] listFiles;
-    if (config.fileRegex != null) {
+    final String filRegex = source.getName();
+    final Path srcDir = source.getParent();
+    if (!filRegex.isEmpty()) {
       PathFilter filter = new PathFilter() {
-        private final Pattern pattern = Pattern.compile(config.fileRegex);
+        private final Pattern pattern = Pattern.compile(filRegex);
 
         @Override
         public boolean accept(Path path) {
@@ -112,25 +106,22 @@ public class HDFSFileMergeAction extends Action {
         }
       };
 
-      listFiles = fileSystem.listStatus(source, filter);
+      listFiles = fileSystem.listStatus(srcDir, filter);
     } else {
-      listFiles = fileSystem.listStatus(source);
+      listFiles = fileSystem.listStatus(srcDir);
     }
 
     if (listFiles.length == 0) {
-      if (config.fileRegex != null) {
-        LOG.warn("Not concatenating any files of type {} from source {}", config.fileRegex, source.toString());
+      if (!filRegex.isEmpty()) {
+        LOG.warn("Not concatenating any files of type {} from source {}", filRegex, srcDir.toString());
       } else {
-        LOG.warn("Not concatenating any files from source {}", source.toString());
+        LOG.warn("Not concatenating any files from source {}", srcDir.toString());
       }
       return;
     }
 
-    if (fileSystem.isFile(dest)) {
-      throw new IllegalArgumentException(String.format("destPath %s needs to be a directory since sourcePath is a " +
-                                                         "directory", config.destPath));
-    }
-    fileSystem.mkdirs(dest); //create destination directory if necessary
+    //create destination directory if necessary
+    fileSystem.mkdirs(dest.getParent());
 
     // order the files
     Arrays.sort(listFiles, new FileStatusComparator());
@@ -152,8 +143,7 @@ public class HDFSFileMergeAction extends Action {
     LOG.info("Size of byte array {} bytes", resultByteArray.length);
     try {
       if (resultByteArray.length > 0) {
-        String path =
-          String.format("%s/%s", config.destPath, config.destFileName == null ? "output" : config.destFileName);
+        String path = String.format("%s", config.destPath);
         LOG.info("Destination path file at {}", path);
         FSDataOutputStream outputStream = fileSystem.create(new Path(path));
         LOG.info("Created path file at {}", path);
@@ -193,26 +183,14 @@ public class HDFSFileMergeAction extends Action {
     @Macro
     private String destPath;
 
-    @Description("Optional Name of the merged file, default is 'output' if its not provided")
-    @Nullable
-    private String destFileName;
-
-    @Description("Wildcard regular expression to filter the files in the source directory that will be moved, " +
-      "Example for matching all avro files")
-    @Nullable
-    private String fileRegex;
-
     @Description("Indicates if the pipeline should continue if the concatenate process fails")
     @Nullable
     private boolean continueOnError;
 
     @VisibleForTesting
-    HDFSActionConfig(String sourcePath, String destPath, String fileRegex, String destFileName,
-                     boolean continueOnError) {
+    HDFSActionConfig(String sourcePath, String destPath, boolean continueOnError) {
       this.sourcePath = sourcePath;
       this.destPath = destPath;
-      this.fileRegex = fileRegex;
-      this.destFileName = destFileName;
       this.continueOnError = continueOnError;
     }
   }

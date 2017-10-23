@@ -17,16 +17,6 @@
           "name": "destPath"
         },
         {
-          "widget-type": "textbox",
-          "label": "Destination File Name",
-          "name": "destFileName"
-        },
-        {
-          "widget-type": "textbox",
-          "label": "Wildcard",
-          "name": "fileRegex"
-        },
-        {
           "widget-type": "select",
           "label": "Continue Pipeline Upon Error",
           "name": "continueOnError",
