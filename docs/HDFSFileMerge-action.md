@@ -19,7 +19,7 @@ Properties
                 files will be lexicographically sorted before merging, for the part files,
                 we also sort by the part file index and we assume they are in following format,
                 format : `part-xx-<id>` , we sort by increasing values of `<id>` for the files with same `part-xx`
-                Example path: `hdfs://hostname/tmp/source/part.*\.avro`.
+                Example path: `hdfs://hostname/tmp/source/part.*avro`.
 
 
 **destPath:** The valid, full HDFS destination directory and file name in the same cluster where the merged file will be written.
@@ -46,7 +46,7 @@ This example merges avro files from `/source/path` and writes the merged file `m
                },
                "properties": {
                    "continueOnError": "false",
-                   "sourcePath": "hdfs://example.net/source/path/part.*\.avro",
+                   "sourcePath": "hdfs://example.net/source/path/part.*avro",
                    "destPath": "hdfs://example.net/dest/path/merged-output.avro",
                }
            },
