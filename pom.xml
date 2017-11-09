@@ -6,7 +6,9 @@
 
   <groupId>co.cask.cdap</groupId>
   <artifactId>hdfs-file-merge</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
+
+  <name>HDFS File Merge Plugins</name>
 
   <licenses>
     <license>
@@ -66,8 +68,6 @@
     <mapr.streams.version>5.2.0-mapr</mapr.streams.version>
     <mapr.kafka.version>0.9.0.0-mapr-1607</mapr.kafka.version>
     <hadoop.version>2.3.0</hadoop.version>
-    <!-- properties for script build step that creates the config files for the artifacts -->
-    <app.parents>system:cdap-data-streams[4.3.0-SNAPSHOT,5.0.0),system:cdap-data-pipeline[4.3.0-SNAPSHOT,5.0.0)</app.parents>
     <main.basedir>${project.basedir}</main.basedir>
   </properties>
 
