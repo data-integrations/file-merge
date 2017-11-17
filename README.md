@@ -1,9 +1,9 @@
-HDFS File Merge Plugin
-============
+# HDFS File Merge Plugin
 
+[![cm-available](https://cdap-users.herokuapp.com/assets/cm-available.svg)](https://docs.cask.co/cdap/current/en/integrations/cask-market.html)
 <a href="https://cdap-users.herokuapp.com/"><img alt="Join CDAP community" src="https://cdap-users.herokuapp.com/badge.svg?t=to-utf8-action"/></a> [![Build Status](https://travis-ci.org/hydrator/to-utf8-action.svg?branch=release/1.0)](https://travis-ci.org/hydrator/to-utf8-action) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) <img alt="CDAP Action" src="https://cdap-users.herokuapp.com/assets/cdap-action.svg"/> []()
 
-HDFS File merge plugin that merges small files in HDFS and writes the merged file to a destination.
+The [HDFS File Merge Action](docs/HDFSFileMerge-action.md) merges small files in HDFS and writes the merged file to a destination.
 
 Build
 -----
