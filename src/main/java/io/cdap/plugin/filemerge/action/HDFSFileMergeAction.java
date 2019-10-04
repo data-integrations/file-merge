@@ -13,17 +13,17 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package co.cask.cdap.hydrator.plugin.action;
+package io.cdap.plugin.filemerge.action;
 
-import co.cask.cdap.api.annotation.Description;
-import co.cask.cdap.api.annotation.Macro;
-import co.cask.cdap.api.annotation.Name;
-import co.cask.cdap.api.annotation.Plugin;
-import co.cask.cdap.api.common.Bytes;
-import co.cask.cdap.api.plugin.PluginConfig;
-import co.cask.cdap.etl.api.PipelineConfigurer;
-import co.cask.cdap.etl.api.action.Action;
-import co.cask.cdap.etl.api.action.ActionContext;
+import io.cdap.cdap.api.annotation.Description;
+import io.cdap.cdap.api.annotation.Macro;
+import io.cdap.cdap.api.annotation.Name;
+import io.cdap.cdap.api.annotation.Plugin;
+import io.cdap.cdap.api.common.Bytes;
+import io.cdap.cdap.api.plugin.PluginConfig;
+import io.cdap.cdap.etl.api.PipelineConfigurer;
+import io.cdap.cdap.etl.api.action.Action;
+import io.cdap.cdap.etl.api.action.ActionContext;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.ByteStreams;
 import org.apache.hadoop.conf.Configuration;
