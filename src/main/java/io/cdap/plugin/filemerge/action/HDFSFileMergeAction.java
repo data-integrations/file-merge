@@ -15,17 +15,16 @@
  */
 package io.cdap.plugin.filemerge.action;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.io.ByteStreams;
 import io.cdap.cdap.api.annotation.Description;
-import io.cdap.cdap.api.annotation.Macro;
 import io.cdap.cdap.api.annotation.Name;
 import io.cdap.cdap.api.annotation.Plugin;
 import io.cdap.cdap.api.common.Bytes;
-import io.cdap.cdap.api.plugin.PluginConfig;
+import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.cdap.etl.api.PipelineConfigurer;
 import io.cdap.cdap.etl.api.action.Action;
 import io.cdap.cdap.etl.api.action.ActionContext;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.ByteStreams;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -40,7 +39,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.regex.Pattern;
-import javax.annotation.Nullable;
 
 /**
  * Action to concatenate files in HDFS
@@ -51,9 +49,9 @@ import javax.annotation.Nullable;
 public class HDFSFileMergeAction extends Action {
   private static final Logger LOG = LoggerFactory.getLogger(HDFSFileMergeAction.class);
 
-  private HDFSActionConfig config;
+  private HDFSFileMergeActionConfig config;
 
-  public HDFSFileMergeAction(HDFSActionConfig config) {
+  public HDFSFileMergeAction(HDFSFileMergeActionConfig config) {
     this.config = config;
   }
 
@@ -84,9 +82,13 @@ public class HDFSFileMergeAction extends Action {
 
   @Override
   public void run(ActionContext context) throws Exception {
-    Path source = new Path(config.sourcePath);
+    FailureCollector collector = context.getFailureCollector();
+    config.validate(collector);
+    collector.getOrThrowException();
 
-    Path dest = new Path(config.destPath);
+    Path source = new Path(config.getSourcePath());
+
+    Path dest = new Path(config.getDestPath());
 
     FileSystem fileSystem = source.getFileSystem(new Configuration());
     fileSystem.mkdirs(dest.getParent());
@@ -134,7 +136,7 @@ public class HDFSFileMergeAction extends Action {
       try (FSDataInputStream fsDataInputStream = fileSystem.open(file.getPath())) {
         resultByteArray = Bytes.add(resultByteArray, ByteStreams.toByteArray(fsDataInputStream));
       } catch (IOException e) {
-        if (!config.continueOnError) {
+        if (!config.isContinueOnError()) {
           throw e;
         }
         LOG.error("Failed to concatenate file {} to {}", source.toString(), dest.toString(), e);
@@ -143,7 +145,7 @@ public class HDFSFileMergeAction extends Action {
     LOG.info("Size of byte array {} bytes", resultByteArray.length);
     try {
       if (resultByteArray.length > 0) {
-        String path = String.format("%s", config.destPath);
+        String path = String.format("%s", config.getDestPath());
         LOG.info("Destination path file at {}", path);
         FSDataOutputStream outputStream = fileSystem.create(new Path(path));
         LOG.info("Created path file at {}", path);
@@ -152,7 +154,7 @@ public class HDFSFileMergeAction extends Action {
         LOG.info("Completed writing {}", path);
       }
     } catch (IOException e) {
-      if (!config.continueOnError) {
+      if (!config.isContinueOnError()) {
         throw e;
       }
       LOG.error("Failed to concatenate file {} to {}", source.toString(), dest.toString(), e);
@@ -161,37 +163,8 @@ public class HDFSFileMergeAction extends Action {
 
   @Override
   public void configurePipeline(PipelineConfigurer pipelineConfigurer) {
-
-  }
-
-  /**
-   * Config class that contains all properties necessary to execute an HDFS move command.
-   */
-  public class HDFSActionConfig extends PluginConfig {
-    @Description("The full HDFS path of the directory whose files have to be merged. " +
-      "if fileRegex is set, then only files in the source directory matching the wildcard " +
-      "regex will be concatenated. Otherwise, all files in the directory will be concatenated. " +
-      "files will be lexicographically sorted before merging, " +
-      "for the part files, we also sort by the part file index and we assume they are in following format," +
-      "format : part-xx-<id> , we sort by increasing values of <id> for the files with same part-xx " +
-      "Example path: hdfs://hostname/tmp")
-    @Macro
-    private String sourcePath;
-
-    @Description("The valid, full HDFS destination path for directory" +
-      " in the same cluster where the concatenated file will be written.")
-    @Macro
-    private String destPath;
-
-    @Description("Indicates if the pipeline should continue if the concatenate process fails")
-    @Nullable
-    private boolean continueOnError;
-
-    @VisibleForTesting
-    HDFSActionConfig(String sourcePath, String destPath, boolean continueOnError) {
-      this.sourcePath = sourcePath;
-      this.destPath = destPath;
-      this.continueOnError = continueOnError;
-    }
+    FailureCollector collector = pipelineConfigurer.getStageConfigurer().getFailureCollector();
+    config.validate(collector);
+    collector.getOrThrowException();
   }
 }
