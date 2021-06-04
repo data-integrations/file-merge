@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>co.cask.cdap</groupId>
+  <groupId>io.cdap.cdap</groupId>
   <artifactId>hdfs-file-merge</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
@@ -19,37 +19,26 @@
 
   <developers>
     <developer>
-      <name>Cask Data</name>
-      <email>cask-dev@googlegroups.com</email>
+      <name>CDAP</name>
+      <email>cdap-dev@googlegroups.com</email>
       <organization>Cask Data, Inc.</organization>
       <organizationUrl>http://www.cdap.io</organizationUrl>
     </developer>
   </developers>
 
-  <issueManagement>
-    <url>https://issues.cask.co/browse/HYDRATOR</url>
-  </issueManagement>
-
   <distributionManagement>
-    <repository>
-      <id>sonatype.release</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
+  
     <snapshotRepository>
       <id>sonatype.snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
     <site>
-      <id>cask</id>
-      <url>http://cask.co</url>
+      <id>cdap</id>
+      <url>http://cdap.io</url>
     </site>
   </distributionManagement>
 
   <repositories>
-    <repository>
-      <id>sonatype.release</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
     <repository>
       <id>sonatype-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -58,51 +47,43 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>4.3.0</cdap.version>
+    <cdap.version>6.4.1</cdap.version>
     <hydrator.version>1.8.0</hydrator.version>
-    <spark.version>1.6.1</spark.version>
+    <spark.version>3.1.1</spark.version>
     <widgets.dir>widgets</widgets.dir>
     <docs.dir>docs</docs.dir>
-    <mapr.streams.version>5.2.0-mapr</mapr.streams.version>
-    <mapr.kafka.version>0.9.0.0-mapr-1607</mapr.kafka.version>
     <hadoop.version>2.3.0</hadoop.version>
     <!-- properties for script build step that creates the config files for the artifacts -->
-    <app.parents>system:cdap-data-streams[4.3.0-SNAPSHOT,5.0.0),system:cdap-data-pipeline[4.3.0-SNAPSHOT,5.0.0)</app.parents>
+    <app.parents>system:cdap-data-streams[6.0.0-SNAPSHOT,7.0.0),system:cdap-data-pipeline[6.0.0-SNAPSHOT,7.0.0)</app.parents>
     <main.basedir>${project.basedir}</main.basedir>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>co.cask.cdap</groupId>
+      <groupId>io.cdap.cdap</groupId>
       <artifactId>cdap-etl-api</artifactId>
       <version>${cdap.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>co.cask.cdap</groupId>
+      <groupId>io.cdap.cdap</groupId>
       <artifactId>cdap-formats</artifactId>
       <version>${cdap.version}</version>
     </dependency>
     <dependency>
-      <groupId>co.cask.cdap</groupId>
+      <groupId>io.cdap.cdap</groupId>
       <artifactId>cdap-etl-api-spark</artifactId>
       <version>${cdap.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>co.cask.cdap</groupId>
-      <artifactId>hydrator-test</artifactId>
-      <version>${cdap.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>co.cask.cdap</groupId>
+      <groupId>io.cdap.cdap</groupId>
       <artifactId>cdap-data-pipeline</artifactId>
       <version>${cdap.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>co.cask.cdap</groupId>
+      <groupId>io.cdap.cdap</groupId>
       <artifactId>cdap-data-streams</artifactId>
       <version>${cdap.version}</version>
       <scope>test</scope>
@@ -234,12 +215,6 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.0</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-mllib_2.10</artifactId>
-      <version>${spark.version}</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -250,20 +225,18 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
           <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
+            <source>1.8</source>
+            <target>1.8</target>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.5.4</version>
+          <version>3.3.0</version>
           <extensions>true</extensions>
           <configuration>
             <instructions>
-              <_exportcontents>co.cask.*;org.apache.spark.streaming.kafka.*;
-                kafka.serializer.*;kafka.common;org.apache.kafka.*;com.mapr.streams.*;
-                org.apache.xalan.*</_exportcontents>
+              <_exportcontents>io.cdap.cdap.plugin.*;io.cdap.cdap.hydrator.plugin.*;</_exportcontents>
               <Embed-Dependency>*;inline=false;scope=compile</Embed-Dependency>
               <Embed-Transitive>true</Embed-Transitive>
               <Embed-Directory>lib</Embed-Directory>
@@ -279,12 +252,12 @@
           </executions>
         </plugin>
         <plugin>
-          <groupId>co.cask</groupId>
+          <groupId>io.cdap</groupId>
           <artifactId>cdap-maven-plugin</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0</version>
           <configuration>
             <cdapArtifacts>
-              <parent>system:cdap-data-pipeline[4.3.0-SNAPSHOT,5.0.0)</parent>
+              <parent>system:cdap-data-pipeline[6.0.0-SNAPSHOT,7.0.0)</parent>
             </cdapArtifacts>
           </configuration>
           <executions>
@@ -310,7 +283,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>co.cask</groupId>
+        <groupId>io.cdap</groupId>
         <artifactId>cdap-maven-plugin</artifactId>
       </plugin>
     </plugins>
